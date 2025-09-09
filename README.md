@@ -73,22 +73,13 @@ kubectl get nodes
 
     Cloner le repository :
 ```bash
-git clone https://github.com/votre-username/helm-kubernetes.git
+git clone https://github.com/OlivierLAVAUD/helm-kubernetes.git
 cd helm-kubernetes
 ```
-    Démarrer Minikube (si utilisé) :
-
-```bash
-git clone https://github.com/votre-username/helm-kubernetes.git
-cd helm-kubernetes
-```
-
+    Initier l'environement
 ```bash
 ./scripts/check-environment.sh
 ```
-
-
-
 
 
 ## 🚀 Quick Start
