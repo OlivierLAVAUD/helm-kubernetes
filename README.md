@@ -87,6 +87,9 @@ cd helm-kubernetes
 ```bash
 chmod +x setup-environement.sh
 chmod +x deploy-level.sh
+chmod +x verify-deployment.sh
+chmod +x big-cleanup.sh
+
 
 # Setup environment
 ./scripts/setup-environment.sh
@@ -105,6 +108,26 @@ chmod +x deploy-level.sh
 
 cd 05-with-security/
 helm install my-app-secure . --timeout 5m0s
+```
+# Verifications du deploiement
+```bash
+./scripts/verify-deployment.sh
+```
+
+
+# Creation d'alias pour les executables
+
+```bash
+nano ~/.bashrc  # Pour Bash
+# ajouter la ligne et sauvegarder
+alias big-cleanup="$PWD/scripts/big-cleanup.sh"
+
+# appliquer les modifications
+source ~/.bashrc  
+
+# Utiliser l'alias
+big-cleanup
+
 ```
 
 # Surveillance du Déploiement
@@ -132,7 +155,7 @@ curl http://localhost:8080
 # ou ouvrir http://localhost:8080
 ```
 
-## 📊 Verification
+## 📊 Autres verifications
 ```bash
 # Voir les pods
 kubectl get pods -w
