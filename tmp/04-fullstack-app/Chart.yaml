@@ -1,0 +1,13 @@
+apiVersion: v2
+name: simple-app
+description: A simple Nginx application deployed with Helm
+version: 0.1.0
+appVersion: "1.0.0"
+type: application
+keywords:
+  - nginx
+  - web
+  - beginner
+maintainers:
+  - name: Kubernetes Learner
+    email: learner@example.com

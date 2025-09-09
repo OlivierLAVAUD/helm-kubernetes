@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "simple-app.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- if .Values.highAvailability.enabled }}
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
+  {{- end }}
+spec:
+  {{- if .Values.highAvailability.enabled }}
+  replicas: {{ .Values.highAvailability.minReplicas }}
+  {{- else }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "simple-app.selectorLabels" . | nindent 6 }}
+  strategy:
+    {{- if .Values.highAvailability.enabled }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    {{- else }}
+    type: Recreate
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "simple-app.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.highAvailability.enabled }}
+        app.kubernetes.io/ha: "enabled"
+        {{- end }}
+      annotations:
+        {{- with .Values.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.highAvailability.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "80"
+        prometheus.io/path: "/metrics"
+        {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "simple-app.serviceAccountName" . }}
+      {{- end }}
+      {{- include "simple-app.podSecurityContext" . | nindent 6 }}
+      {{- if .Values.highAvailability.enabled }}
+      terminationGracePeriodSeconds: 30
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- include "simple-app.containerSecurityContext" . | nindent 8 }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: http
+        {{- if .Values.nginxConfig.enabled }}
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+        {{- if .Values.image.securityContext.readOnlyRootFilesystem }}
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: var-tmp-volume
+          mountPath: /var/tmp
+        - name: var-run-volume
+          mountPath: /var/run
+        - name: var-log-volume
+          mountPath: /var/log/nginx
+        {{- end }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- with .Values.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.startupProbe }}
+        startupProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.highAvailability.enabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10; nginx -s quit"]
+        {{- end }}
+      {{- if .Values.nginxConfig.enabled }}
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: {{ include "simple-app.configMapName" . }}
+      {{- if .Values.image.securityContext.readOnlyRootFilesystem }}
+      - name: tmp-volume
+        emptyDir:
+          medium: Memory
+      - name: var-tmp-volume
+        emptyDir:
+          medium: Memory
+      - name: var-run-volume
+        emptyDir:
+          medium: Memory
+      - name: var-log-volume
+        emptyDir: {}
+      {{- end }}
+      {{- end }}
+      {{- include "simple-app.affinity" . | nindent 6 }}
+      {{- include "simple-app.topologySpreadConstraints" . | nindent 6 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

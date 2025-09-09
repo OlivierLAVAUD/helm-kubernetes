@@ -1,0 +1,125 @@
+# Application Configuration
+replicaCount: 1
+
+# Image Configuration
+image:
+  repository: nginx
+  tag: alpine
+  pullPolicy: IfNotPresent
+
+# Service Configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+# Nginx Configuration
+nginxConfig:
+  enabled: true
+  configMapName: "nginx-config"
+  # Configuration par défaut pour Nginx
+  defaultConfig: |
+    server {
+        listen 80;
+        server_name localhost;
+        
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+            try_files $uri $uri/ /index.html;
+        }
+        
+        # Redirection des erreurs vers la page d'erreur
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+            root /usr/share/nginx/html;
+        }
+        
+        # Désactiver l'accès aux fichiers cachés
+        location ~ /\. {
+            deny all;
+        }
+    }
+  # Configurations supplémentaires (optionnel)
+  extraConfigs: {}
+  # Exemple d'utilisation:
+  # extraConfigs:
+  #   custom.conf: |
+  #     server {
+  #         listen 8080;
+  #         # configuration supplémentaire...
+  #     }
+
+# Autoscaling Configuration
+autoscaling:
+  enabled: true
+  hpaName: ""
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+  # Custom metrics (example)
+  # metrics:
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: packets-per-second
+  #     target:
+  #       type: AverageValue
+  #       averageValue: 1k
+  # Behavior configuration (optional)
+  # behavior:
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #     - type: Percent
+  #       value: 100
+  #       periodSeconds: 15
+
+# Resource Limits
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "50m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
+
+# Health Checks
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+# Service Account
+serviceAccount:
+  create: false
+  name: ""
+
+# Additional Settings
+labels: {}
+annotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Ingress Configuration
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: "myapp.local"
+      paths:
+        - path: "/"
+          pathType: "Prefix"
+  tls: []

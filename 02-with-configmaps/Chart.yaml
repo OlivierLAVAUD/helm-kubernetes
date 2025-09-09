@@ -1,0 +1,15 @@
+apiVersion: v2
+name: simple-app
+description: A simple Nginx application deployed with Helm
+version: 0.1.0 # with Ingress
+appVersion: "1.0.0"
+type: application
+keywords:
+  - kubernetes
+  - helm
+  - nginx
+  - ingress
+  - configmaps
+maintainers:
+  - name: Kubernetes Administrator
+    email: olivier.lavaud@gmail.com

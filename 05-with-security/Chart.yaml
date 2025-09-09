@@ -1,0 +1,21 @@
+apiVersion: v2
+name: simple-app
+description: A highly available and secure Nginx application deployed with Helm
+version: 0.4.0
+appVersion: "1.0.0"
+type: application
+keywords:
+  - nginx
+  - web
+  - high-availability
+  - ha
+  - security
+  - rbac
+  - serviceaccount
+maintainers:
+  - name: Kubernetes Administrator
+    email: olivier.lavaud@gmail.com
+annotations:
+  category: Web Server
+  high-availability: "true"
+  security-hardened: "true"

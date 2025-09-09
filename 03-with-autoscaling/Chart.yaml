@@ -1,0 +1,15 @@
+apiVersion: v2
+name: simple-app
+description: A simple Nginx application with HPA, deployed with Helm
+version: 0.2.0  # with HPA (Horizontal Pod Autoscaler)
+appVersion: "1.0.0"
+type: application
+keywords:
+  - nginx
+  - web
+  - configmaps
+  - autoscaling
+  - hpa
+maintainers:
+  - name: Kubernetes Administrator
+    email: olivier.lavaud@gmail.com

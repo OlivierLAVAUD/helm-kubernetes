@@ -1,0 +1,18 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-monitor
+  labels:
+    {{- include "fullstack-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: monitor
+spec:
+  selector:
+    matchLabels:
+      {{- include "fullstack-app.selectorLabels" . | nindent 4 }}
+  endpoints:
+  - port: http-metrics
+    interval: {{ .Values.monitoring.prometheus.scrapeInterval }}
+    scrapeTimeout: {{ .Values.monitoring.prometheus.scrapeTimeout }}
+    path: {{ .Values.backend.metrics.path }}
+{{- end }}

@@ -1,0 +1,19 @@
+apiVersion: v2
+name: simple-app
+description: A highly available Nginx application deployed with Helm
+version: 0.3.0  # Version mise à jour avec l'ajout de la HA
+appVersion: "1.0.0"
+type: application
+keywords:
+  - nginx
+  - web
+  - high-availability
+  - ha
+  - autoscaling
+  - hpa
+maintainers:
+  - name: Kubernetes Administrator
+    email: olivier.lavaud@gmail.com
+annotations:
+  category: Web Server
+  high-availability: "true"

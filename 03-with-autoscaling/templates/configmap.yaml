@@ -1,0 +1,14 @@
+{{- if .Values.nginxConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "simple-app.configMapName" . }}
+  labels:
+    {{- include "simple-app.labels" . | nindent 4 }}
+data:
+  nginx.conf: |
+    {{- .Values.nginxConfig.defaultConfig | nindent 4 }}
+  {{- with .Values.nginxConfig.extraConfigs }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}

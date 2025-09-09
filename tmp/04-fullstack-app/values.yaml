@@ -1,0 +1,91 @@
+# Global Configuration
+global:
+  environment: development
+  domain: myapp.local
+
+# Frontend Configuration
+frontend:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: nginx
+    tag: alpine
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Backend Configuration
+backend:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: node
+    tag: 18-alpine
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+  env:
+    NODE_ENV: production
+    PORT: "3000"
+    DATABASE_URL: "postgresql://user:pass@{{ .Release.Name }}-postgres-service:5432/mydb"
+
+# Database Configuration
+database:
+  enabled: true
+  image:
+    repository: postgres
+    tag: 15-alpine
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  postgresql:
+    database: mydb
+    username: user
+    password: pass
+    persistence:
+      enabled: false
+      size: 1Gi
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: "{{ .Values.global.domain }}"
+      paths:
+        - path: "/"
+          pathType: "Prefix"
+
+# Auto-scaling Configuration
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80

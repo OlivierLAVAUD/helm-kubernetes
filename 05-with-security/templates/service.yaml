@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    {{- include "simple-app.labels" . | nindent 4 }}
+    {{- if .Values.highAvailability.enabled }}
+    service.kubernetes.io/ha: "enabled"
+    {{- end }}
+  {{- if .Values.highAvailability.enabled }}
+  annotations:
+    service.kubernetes.io/topology-aware-hints: "auto"
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    {{- include "simple-app.selectorLabels" . | nindent 4 }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+    protocol: TCP
+    name: http
+  {{- if and .Values.highAvailability.enabled (eq .Values.service.type "ClusterIP") }}
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  {{- end }}

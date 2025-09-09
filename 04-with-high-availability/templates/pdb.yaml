@@ -1,0 +1,19 @@
+{{- if and .Values.highAvailability.enabled .Values.highAvailability.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}-pdb
+  labels:
+    {{- include "simple-app.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "simple-app.selectorLabels" . | nindent 6 }}
+  {{- if .Values.highAvailability.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.highAvailability.podDisruptionBudget.minAvailable }}
+  {{- else if .Values.highAvailability.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.highAvailability.podDisruptionBudget.maxUnavailable }}
+  {{- else }}
+  minAvailable: 2
+  {{- end }}
+{{- end }}

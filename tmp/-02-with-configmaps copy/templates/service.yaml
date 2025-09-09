@@ -1,0 +1,13 @@
+apiVersion: v1       # ⬅️ OBLIGATOIRE
+kind: Service        # ⬅️ OBLIGATOIRE
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.port }}
+  selector:
+    app: {{ .Release.Name }}
