@@ -1,4 +1,4 @@
-🚀 Helm Kubernetes Learning Project
+# 🚀 Helm Kubernetes Learning Project
 
 Un guide progressif pour maîtriser le déploiement d'applications sur Kubernetes avec Helm, de la configuration basique à l'architecture de production
 
@@ -6,7 +6,7 @@ Un guide progressif pour maîtriser le déploiement d'applications sur Kubernete
 ![Helm & Kubernetes](image.png)
 
 
-📋 Table des Matières
+## 📋 Table des Matières
 
     Présentation du Projet
     Architecture des Niveaux
@@ -20,7 +20,7 @@ Un guide progressif pour maîtriser le déploiement d'applications sur Kubernete
     Contribuer
     Licence
 
-🎯 Présentation du Projet
+## 🎯 Présentation du Projet
 
 Ce projet est conçu pour apprendre progressivement Helm et Kubernetes à travers 5 niveaux de complexité croissante :
 
@@ -33,7 +33,7 @@ Ce projet est conçu pour apprendre progressivement Helm et Kubernetes à traver
 Chaque niveau ajoute de nouvelles fonctionnalités tout en respectant les best practices Kubernetes
 
 
-🏗️ Architecture des Niveaux
+## 🏗️ Architecture des Niveaux
 
 ```bash
 helm-kubernetes/
@@ -47,14 +47,14 @@ helm-kubernetes/
 └── README.md
 ```
 
-⚙️ Prérequis
+## ⚙️ Prérequis
 
     Kubernetes Cluster : Minikube, Kind, ou cluster cloud
     Helm v3.8+ : Installation guide
     kubectl : Client Kubernetes
     Git : Version control
 
-Vérification de l'installation
+## Vérification de l'installation
 
 ```bash
 # Vérifier Kubernetes
@@ -69,7 +69,7 @@ kubectl cluster-info
 kubectl get nodes
 ```
 
-🚀 Installation
+## 🚀 Installation
 
     Cloner le repository :
 ```bash
