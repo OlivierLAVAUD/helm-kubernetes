@@ -3,6 +3,9 @@
 Un guide progressif pour maîtriser le déploiement d'applications sur Kubernetes avec Helm, de la configuration basique à l'architecture de production
 
 
+![Helm & Kubernetes](image.png)
+
+
 📋 Table des Matières
 
     Présentation du Projet
